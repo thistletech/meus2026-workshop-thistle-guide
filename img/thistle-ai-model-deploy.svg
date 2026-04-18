@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="Animated data flow: TRH on a laptop encrypts and signs model.pt, releases the OTA bundle to Thistle Control Center, TUC on a Raspberry Pi fetches and verifies it, and decrypts the model for the AI app at inference time.">
+  <title>Thistle AI model OTA deployment data flow</title>
+  <style>
+    <![CDATA[
+      :root {
+        --bg: #ffffff;
+        --surface: #f8fafc;
+        --chrome: #f1f5f9;
+        --stroke: #cbd5e1;
+        --stroke-dim: #e2e8f0;
+        --text: #0f172a;
+        --text2: #475569;
+        --text3: #94a3b8;
+        --accent: #2563eb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --surface: #161b22;
+          --chrome: #21262d;
+          --stroke: #30363d;
+          --stroke-dim: #21262d;
+          --text: #e6edf3;
+          --text2: #8b949e;
+          --text3: #6e7681;
+          --accent: #58a6ff;
+        }
+      }
+      .bg-fill    { fill: var(--bg); }
+      .surface    { fill: var(--surface); stroke: var(--stroke); }
+      .chrome     { fill: var(--chrome); stroke: var(--stroke); }
+      .inner      { fill: var(--surface); stroke: var(--stroke-dim); }
+      .stroke-s   { stroke: var(--stroke); fill: none; }
+      .stroke-d   { stroke: var(--stroke-dim); fill: none; }
+      .accent-s   { stroke: var(--accent); fill: none; }
+      .accent-fill{ fill: var(--accent); }
+      .t1         { fill: var(--text); }
+      .t2         { fill: var(--text2); }
+      .t3         { fill: var(--text3); }
+      .ta         { fill: var(--accent); }
+      .mono       { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .sans       { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    ]]>
+  </style>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--stroke)"/>
+    </marker>
+    <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--accent)"/>
+    </marker>
+  </defs>
+
+  <rect class="bg-fill" width="960" height="540"/>
+
+  <text class="sans t1" x="24" y="34" font-size="18" font-weight="600">Thistle AI Model OTA Deploy Data Flow</text>
+  <text class="sans t3" x="24" y="54" font-size="12">model.pt &#8594; TRH (encrypt + sign) &#8594; TCC &#8594; TUC &#8594; AI app (verify + decrypt at inference)</text>
+
+  <rect x="24" y="72" width="912" height="4" rx="2" fill="var(--chrome)"/>
+  <rect x="24" y="72" width="0" height="4" rx="2" class="accent-fill">
+    <animate attributeName="width" from="0" to="912" dur="16s" repeatCount="indefinite"/>
+  </rect>
+  <g fill="var(--stroke)">
+    <rect x="115.2" y="70" width="1" height="8"/>
+    <rect x="224.6" y="70" width="1" height="8"/>
+    <rect x="334.1" y="70" width="1" height="8"/>
+    <rect x="516.5" y="70" width="1" height="8"/>
+    <rect x="698.9" y="70" width="1" height="8"/>
+    <rect x="808.3" y="70" width="1" height="8"/>
+  </g>
+
+  <!-- ================= LAPTOP ================= -->
+  <g>
+    <rect class="chrome" x="60" y="130" width="300" height="240" rx="10"/>
+    <rect class="chrome" x="40" y="370" width="340" height="10" rx="3"/>
+    <text class="sans t1" x="76" y="154" font-size="13" font-weight="600">Laptop PC</text>
+
+    <rect class="inner" x="76" y="166" width="268" height="188" rx="8"/>
+    <text class="sans ta" x="90" y="188" font-size="12" font-weight="600">Thistle Release Helper (TRH)</text>
+
+    <g>
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="1;1;0.45;0.45;1" keyTimes="0;0.22;0.34;0.999;1"/>
+      <rect class="inner" x="92" y="208" width="238" height="22" rx="4"/>
+      <text class="mono t2" x="102" y="223" font-size="11">model.pt</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.21;0.23;0.999;1"/>
+      <rect class="inner" x="92" y="240" width="238" height="22" rx="4" stroke="var(--accent)"/>
+      <text class="mono ta" x="102" y="255" font-size="11">model.pt.thistlepfe</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.33;0.35;0.999;1"/>
+      <rect class="inner" x="92" y="272" width="238" height="22" rx="4" stroke="var(--accent)"/>
+      <text class="mono ta" x="102" y="287" font-size="11">model.pt.thistlepfe.thistlesig</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.10;0.11;0.21;0.22;1"/>
+      <rect x="240" y="196" width="90" height="40" rx="5" class="accent-s" stroke-dasharray="4 3"/>
+      <text class="mono ta" x="248" y="220" font-size="11">encrypting...</text>
+    </g>
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.33;0.34;1"/>
+      <rect x="240" y="228" width="90" height="40" rx="5" class="accent-s" stroke-dasharray="4 3"/>
+      <text class="mono ta" x="248" y="252" font-size="11">signing...</text>
+    </g>
+  </g>
+
+  <line x1="20" y1="218" x2="88" y2="218" class="stroke-s" marker-end="url(#arr)"/>
+
+  <!-- ================= TCC CLOUD ================= -->
+  <g>
+    <path class="chrome"
+          d="M 400 160
+             Q 370 160 385 134
+             Q 380 100 425 108
+             Q 445 82 480 90
+             Q 518 80 538 108
+             Q 580 100 575 134
+             Q 600 158 570 160
+             Z"/>
+    <path opacity="0"
+          d="M 400 160
+             Q 370 160 385 134
+             Q 380 100 425 108
+             Q 445 82 480 90
+             Q 518 80 538 108
+             Q 580 100 575 134
+             Q 600 158 570 160
+             Z"
+          class="accent-s" stroke-width="1.5">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.53;0.55;0.73;0.75;1"/>
+    </path>
+    <text class="sans t1" x="485" y="125" text-anchor="middle" font-size="12" font-weight="600">Thistle Control Center</text>
+    <text class="sans t3" x="485" y="142" text-anchor="middle" font-size="11">(TCC)</text>
+
+    <text class="sans t3" x="485" y="180" text-anchor="middle" font-size="11">awaiting OTA release
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="1;1;0;0" keyTimes="0;0.33;0.35;1"/>
+    </text>
+    <text class="sans ta mono" x="485" y="180" text-anchor="middle" font-size="11" opacity="0">OTA bundle v1
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.33;0.35;0.74;0.76;1"/>
+    </text>
+  </g>
+
+  <!-- ================= RASPBERRY PI ================= -->
+  <g>
+    <rect class="chrome" x="600" y="130" width="300" height="240" rx="10"/>
+    <circle cx="612" cy="142" r="3" fill="var(--stroke-dim)"/>
+    <circle cx="888" cy="142" r="3" fill="var(--stroke-dim)"/>
+    <circle cx="612" cy="358" r="3" fill="var(--stroke-dim)"/>
+    <circle cx="888" cy="358" r="3" fill="var(--stroke-dim)"/>
+    <text class="sans t1" x="616" y="154" font-size="13" font-weight="600">Raspberry Pi</text>
+
+    <rect class="inner" x="616" y="166" width="140" height="188" rx="8"/>
+    <text class="sans ta" x="628" y="188" font-size="12" font-weight="600">TUC</text>
+    <text class="sans t3" x="628" y="203" font-size="10">Thistle Update</text>
+    <text class="sans t3" x="628" y="215" font-size="10">Client</text>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.73;0.75;0.999;1"/>
+      <rect class="inner" x="628" y="226" width="116" height="22" rx="4"/>
+      <text class="mono t2" x="636" y="241" font-size="10">.thistlepfe</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.73;0.75;0.999;1"/>
+      <rect class="inner" x="628" y="254" width="116" height="22" rx="4">
+        <animate attributeName="stroke" dur="16s" repeatCount="indefinite"
+                 values="var(--stroke-dim);var(--stroke-dim);var(--accent);var(--accent);var(--stroke-dim);var(--stroke-dim)"
+                 keyTimes="0;0.74;0.75;0.86;0.87;1"/>
+      </rect>
+      <text class="mono t2" x="636" y="269" font-size="10">.thistlesig</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.74;0.75;0.85;0.86;1"/>
+      <text class="mono ta" x="628" y="298" font-size="10">verifying...</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.85;0.87;0.999;1"/>
+      <rect x="628" y="286" width="116" height="22" rx="4" class="inner" stroke="var(--accent)"/>
+      <text class="mono ta" x="636" y="301" font-size="10" font-weight="600">signature OK</text>
+    </g>
+
+    <rect class="inner" x="764" y="166" width="128" height="188" rx="8"/>
+    <text class="sans t1" x="776" y="188" font-size="12" font-weight="600">AI Application</text>
+    <text class="sans t3" x="776" y="203" font-size="10">Inference runtime</text>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.85;0.87;0.999;1"/>
+      <rect x="776" y="222" width="104" height="22" rx="4" class="inner" stroke="var(--accent)"/>
+      <text class="mono ta" x="784" y="237" font-size="10" font-weight="600">model loaded</text>
+    </g>
+
+    <g opacity="0">
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0" keyTimes="0;0.87;0.89;0.999;1"/>
+      <rect x="776" y="252" width="104" height="22" rx="4" class="inner"/>
+      <text class="mono t2" x="784" y="267" font-size="10">running inference</text>
+      <circle cx="870" cy="263" r="3" class="accent-fill">
+        <animate attributeName="r" values="2;4;2" dur="1.2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- ================= FLOW PATHS ================= -->
+  <path d="M 310 200 Q 370 150 400 150" class="stroke-d" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <path d="M 310 200 Q 370 150 400 150" class="accent-s" stroke-width="2" opacity="0" marker-end="url(#arrA)">
+    <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+             values="0;0;1;1;0;0" keyTimes="0;0.33;0.35;0.53;0.55;1"/>
+  </path>
+
+  <path d="M 560 150 Q 590 150 650 200" class="stroke-d" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <path d="M 560 150 Q 590 150 650 200" class="accent-s" stroke-width="2" opacity="0" marker-end="url(#arrA)">
+    <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+             values="0;0;1;1;0;0" keyTimes="0;0.53;0.55;0.73;0.75;1"/>
+  </path>
+
+  <text class="sans t3" x="340" y="132" font-size="10">publish OTA
+    <animate attributeName="fill" dur="16s" repeatCount="indefinite"
+             values="var(--text3);var(--text3);var(--accent);var(--accent);var(--text3);var(--text3)"
+             keyTimes="0;0.33;0.35;0.53;0.55;1"/>
+  </text>
+  <text class="sans t3" x="580" y="132" font-size="10">fetch OTA
+    <animate attributeName="fill" dur="16s" repeatCount="indefinite"
+             values="var(--text3);var(--text3);var(--accent);var(--accent);var(--text3);var(--text3)"
+             keyTimes="0;0.53;0.55;0.73;0.75;1"/>
+  </text>
+
+  <!-- ================= PACKETS ================= -->
+  <!-- Packet 1: model.pt sliding into the laptop (P0) -->
+  <g opacity="0">
+    <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+             values="1;1;0;0" keyTimes="0;0.09;0.10;1"/>
+    <g>
+      <animateMotion dur="16s" repeatCount="indefinite"
+                     path="M 20 0 L 92 0"
+                     keyTimes="0;0.10;1" keyPoints="0;1;1" calcMode="linear"/>
+      <g transform="translate(0,218)">
+        <rect x="-4" y="-10" width="72" height="20" rx="4" fill="var(--surface)" stroke="var(--accent)"/>
+        <text class="mono ta" x="32" y="4" text-anchor="middle" font-size="10">model.pt</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Packet 2: OTA bundle Laptop -> TCC (P3) -->
+  <g opacity="0">
+    <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+             values="0;0;1;1;0;0" keyTimes="0;0.34;0.35;0.53;0.54;1"/>
+    <g>
+      <animateMotion dur="16s" repeatCount="indefinite"
+                     path="M 310 200 Q 370 150 400 150"
+                     keyTimes="0;0.34;0.54;1" keyPoints="0;0;1;1" calcMode="linear"/>
+      <g>
+        <rect x="-78" y="-18" width="156" height="36" rx="5" fill="var(--surface)" stroke="var(--accent)"/>
+        <text class="mono ta" x="0" y="-3" text-anchor="middle" font-size="10">model.pt.thistlepfe</text>
+        <text class="mono ta" x="0" y="11" text-anchor="middle" font-size="10">+ .thistlesig</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Packet 3: OTA bundle TCC -> Pi (P4) -->
+  <g opacity="0">
+    <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+             values="0;0;1;1;0;0" keyTimes="0;0.54;0.55;0.73;0.74;1"/>
+    <g>
+      <animateMotion dur="16s" repeatCount="indefinite"
+                     path="M 560 150 Q 590 150 650 200"
+                     keyTimes="0;0.54;0.74;1" keyPoints="0;0;1;1" calcMode="linear"/>
+      <g>
+        <rect x="-78" y="-18" width="156" height="36" rx="5" fill="var(--surface)" stroke="var(--accent)"/>
+        <text class="mono ta" x="0" y="-3" text-anchor="middle" font-size="10">model.pt.thistlepfe</text>
+        <text class="mono ta" x="0" y="11" text-anchor="middle" font-size="10">+ .thistlesig</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Packet 4: plaintext weights TUC -> AI App (P6) -->
+  <g opacity="0">
+    <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+             values="0;0;1;1" keyTimes="0;0.86;0.88;1"/>
+    <g>
+      <animateMotion dur="16s" repeatCount="indefinite"
+                     path="M 756 260 L 764 260"
+                     keyTimes="0;0.86;1" keyPoints="0;0;1" calcMode="linear"/>
+      <g>
+        <rect x="-55" y="-10" width="50" height="20" rx="4" fill="var(--surface)" stroke="var(--accent)"/>
+        <text class="mono ta" x="-30" y="4" text-anchor="middle" font-size="9">weights</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ================= STEP CAPTION ================= -->
+  <g>
+    <rect x="24" y="446" width="912" height="70" rx="8" class="inner"/>
+
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2">STEP 1 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="1;1;0;0" keyTimes="0;0.09;0.10;1"/>
+    </text>
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2" opacity="0">STEP 2 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.10;0.11;0.21;0.22;1"/>
+    </text>
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2" opacity="0">STEP 3 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.34;0.35;1"/>
+    </text>
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2" opacity="0">STEP 4 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.34;0.35;0.54;0.55;1"/>
+    </text>
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2" opacity="0">STEP 5 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.54;0.55;0.74;0.75;1"/>
+    </text>
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2" opacity="0">STEP 6 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.74;0.75;0.86;0.87;1"/>
+    </text>
+    <text class="sans ta" x="40" y="468" font-size="11" font-weight="600" letter-spacing="1.2" opacity="0">STEP 7 OF 7
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1" keyTimes="0;0.86;0.87;1"/>
+    </text>
+
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600">Laptop loads <tspan class="mono">model.pt</tspan>
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="1;1;0;0" keyTimes="0;0.09;0.10;1"/>
+    </text>
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600" opacity="0">TRH encrypts &#8594; <tspan class="mono">model.pt.thistlepfe</tspan>
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.10;0.11;0.21;0.22;1"/>
+    </text>
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600" opacity="0">TRH signs &#8594; <tspan class="mono">model.pt.thistlepfe.thistlesig</tspan>
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.33;0.34;1"/>
+    </text>
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600" opacity="0">TRH publishes OTA bundle to Thistle Control Center (TCC)
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.34;0.35;0.53;0.54;1"/>
+    </text>
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600" opacity="0">TUC on the Raspberry Pi fetches the OTA bundle from TCC
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.54;0.55;0.73;0.74;1"/>
+    </text>
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600" opacity="0">TUC verifies <tspan class="mono">.thistlesig</tspan> against the encrypted model
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1;0;0" keyTimes="0;0.74;0.75;0.85;0.86;1"/>
+    </text>
+    <text class="sans t1" x="40" y="493" font-size="14" font-weight="600" opacity="0">AI app loads the model; TUC decrypts <tspan class="mono">.thistlepfe</tspan> for inference
+      <animate attributeName="opacity" dur="16s" repeatCount="indefinite"
+               values="0;0;1;1" keyTimes="0;0.86;0.87;1"/>
+    </text>
+  </g>
+</svg>
