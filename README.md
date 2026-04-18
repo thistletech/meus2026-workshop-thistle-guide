@@ -1,5 +1,12 @@
 # Microelectronics US 2026 Thistle Workshop Attendee Guide
 
+<p align="center">
+  <img src="img/thistle-ai-model-deploy.svg" alt="Thistle OTA data flow: TRH on
+  a laptop encrypts and signs model.pt, releases the OTA bundle to Thistle
+  Control Center, TUC on a Raspberry Pi fetches and verifies it, and decrypts
+  the model for the AI app at inference time." width="960">
+</p>
+
 In this workshop, we will learn how to
 
 * Use TRH ([Thistle Release
@@ -14,7 +21,7 @@ In this workshop, we will learn how to
 * Use the Infineon OPTIGA™ Trust M secure element to manage the public
   verification key for verifying the OTA update and the AI model.
 
-### Step 1: Set up workshop laptop
+## Step 1: Set up workshop laptop
 
 1. Make sure the laptop is connected to the workshop Wi-Fi hotspot (SSID:
    `Thistle-workshop`).
@@ -29,7 +36,16 @@ In this workshop, we will learn how to
    git clone https://github.com/thistletech/meus2026-workshop-thistle-guide.git
    ```
 
-### Step 2: Sign up on Thistle Control Center (TCC)
+
+## Step 2: Run demo application without using an AI model
+
+
+
+### Step 3: Sign up on Thistle Control Center (TCC)
+
+Sign up in Thistle Control Center (https://app.thistle.tech). Once logged in,
+create a new project, and name it "MEUS 2026 Workshop" - you may also choose
+another project name you like.
 
 ## Run demo app without a model
 
@@ -82,3 +98,16 @@ trh --signing-method="remote" gen-device-config --device-name="demo-device" --en
 Add `"single_check": true` to the end of the JSON file
 
 scp tuc-config thistle@<rpi-ip-address>:~/meus2026-workshop/demo/resources/
+
+### With Trust M
+
+Copy public key to clipboard
+
+# No trailing whitespace
+echo -n "ecdsa:blahblahblah" > ota-pubkey.txt
+
+./demo/provision-trustm.sh ota-pubkey.txt
+
+In tuc-config.json, in public_keys array, replace "ecdsa:..." with "trustm:/dev/i2c-1".
+
+./demo/app/demo.py run
