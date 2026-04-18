@@ -7,55 +7,54 @@
   it, and decrypts the model for the AI app at inference time." width="960">
 </p>
 
-In this workshop, we will learn how to
+In this workshop, you will learn how to:
 
-* Use TRH ([Thistle Release
-  Helper](https://docs.thistle.tech/binaries)) command-line tool to publish an
-  encrypted and digitally signed pre-trained AI model to [Thistle Control
-  Center](https://app.thistle.tech), for OTA (Over-The-Air) deploying the model
-  to a Rasbperry Pi 4 device.
-* Use TUC ([Thistle Update Client](https://docs.thistle.tech/binaries)) to
-  securely OTA deploy the published AI model on the Raspberry Pi 4, and verify
-  the model's digital signature as well as decrypts the AI model when the AI
-  model needs to be loaded for inference.
-* Use the Infineon OPTIGA™ Trust M secure element to manage the public
-  verification key for verifying the OTA update and the AI model.
+* Use the TRH ([Thistle Release
+  Helper](https://docs.thistle.tech/binaries)) command-line tool to encrypt and
+  digitally sign a pre-trained AI model, and publish it to [Thistle Control
+  Center](https://app.thistle.tech) (TCC) for Over-The-Air (OTA) deployment to a
+  Raspberry Pi 4 device.
+* Use TUC ([Thistle Update Client](https://docs.thistle.tech/binaries)) on the
+  Raspberry Pi 4 to securely fetch the OTA bundle, verify the AI model's digital
+  signature, and decrypt the model when it is loaded for inference.
+* Use the Infineon OPTIGA™ Trust M secure element to manage the public key that
+  verifies both the OTA bundle and the AI model.
 
-## Step 1: Set up workshop laptop
+## Step 1: Set up the workshop laptop
 
-1. Make sure the laptop is connected to the workshop Wi-Fi hotspot (SSID:
-   `Thistle-workshop`).
-   
-2. Check that the workshop directory `/home/thistle/meus2026-workshop/` is
-   present. If it's not there, clone this repository
+1. Connect the laptop to the workshop Wi-Fi hotspot (SSID: `Thistle-workshop`).
+
+2. Confirm that the workshop directory `/home/thistle/meus2026-workshop/`
+   exists. If it does not, clone this repository:
 
    ```bash
-   # change to home directory (/home/thistle)
+   # change to the home directory (/home/thistle)
    cd
    # clone this repo
    git clone https://github.com/thistletech/meus2026-workshop-thistle-guide.git
    ```
 
 
-## Step 2: Run demo application without using an AI model
+## Step 2: Run the demo application without an AI model
 
-1. Use a USB to TTL serial cable to connect the laptop PC and the Raspberry Pi 4
-   - this should have already been set up for you. In a terminal window on the PC
+1. A USB-to-TTL serial cable has already been connected between the laptop and
+   the Raspberry Pi 4. Open a terminal on the laptop and attach to the serial
+   console:
 
    ```bash
    minicom -b 115200 -D /dev/ttyUSB0
    ```
 
-2. Make sure the Raspberry Pi is powered on. On the login prompt, use username
-   `thistle` and password `raspberry` to login to the Raspberry Pi.
+2. Make sure the Raspberry Pi is powered on. At the login prompt, log in with
+   username `thistle` and password `raspberry`.
 
-   - Find out the IP address of the Rasbperry Pi, and take note on it.
+   - Find the Raspberry Pi's IP address and note it down:
 
      ```bash
      thistle@thistle-meus26:~ $ ip addr show wlan0
      ```
 
-   - Run the demo AI application without a model
+   - Run the demo application without a model:
 
      ```bash
      # Clean up first
@@ -68,29 +67,29 @@ In this workshop, we will learn how to
      thistle@thistle-meus26:~ $ python demo/app/demo.py
      ```
 
-3. On laptop PC, use a browser to view `http://[RPi IP ADDRESS]:5000/`. You
-   should see a video clip with title "Live Streaming (AI model isn't applied)".
+3. On the laptop, browse to `http://[RPi IP ADDRESS]:5000/`. You should see a
+   video clip titled "Live Streaming (AI model isn't applied)".
 
-### Step 3: Securely deploy AI model and run demo application
+## Step 3: Securely deploy the AI model and run the demo
 
 ### 1. Sign up on TCC
 
-Open a browser on laptop PC.  Sign up in Thistle Control Center
-(https://app.thistle.tech). Once logged in, create a new project, and give it a
-name, e.g., "MEUS 2026 Workshop". Visit "Project Settings > Access > Project",
-and copy the "Project Access Token" to clipboard.
+On the laptop, open a browser and sign up at [Thistle Control
+Center](https://app.thistle.tech). Once logged in, create a new project and
+give it a name (for example, "MEUS 2026 Workshop"). Then visit **Settings >
+Access > Project** and copy the **Project Access Token** to the clipboard.
 
-### 2. Use TRH to publish encrypted and signed pre-trained AI model and create new device configuration
+### 2. Publish the encrypted, signed AI model and generate a device configuration
 
-In a terminal window on laptop PC
+In a terminal on the laptop:
 
 ```bash
-# Change to the repo's directory
+# Change to the repo directory
 cd ~/meus2026-workshop/
-# Paste your Thistle "Project Access Token", then press Ctrl+d
+# Paste your Thistle "Project Access Token", then press Ctrl+D
 export THISTLE_TOKEN=$(cat)
 
-# Active hermit environment
+# Activate the hermit environment
 . bin/activate-hermit
 
 export DEMO_PERSIST_DIR="/home/thistle/.thistle-meus26-demo"
@@ -111,10 +110,10 @@ trh --signing-method="remote" prepare \
   --encrypt-ota \
   --sign-ai-model
 
-# Release OTA bundle to TCC
+# Release the OTA bundle to TCC
 trh --signing-method="remote" release --name="AI model"
 
-# Generate tuc config
+# Generate the TUC config
 trh --signing-method="remote" gen-device-config \
   --device-name="demo-device" \
   --enrollment-type="pre-enroll" \
@@ -122,7 +121,8 @@ trh --signing-method="remote" gen-device-config \
   --config-path="./tuc-config.json"
 ```
 
-Open `tuc-config.json`, and add `"single_check": true` to the end of the JSON block. Example
+Open `tuc-config.json` and add `"single_check": true` to the end of the JSON
+object. For example:
 
 ```json
 {
@@ -133,58 +133,59 @@ Open `tuc-config.json`, and add `"single_check": true` to the end of the JSON bl
 }
 ```
 
-Copy `tuc-config.json` to the Raspberry Pi
+Copy `tuc-config.json` to the Raspberry Pi:
 
 ```bash
-scp tuc-config thistle@[RPi IP ADDRESS]:~/meus2026-workshop/demo/resources/
+scp tuc-config.json thistle@[RPi IP ADDRESS]:~/meus2026-workshop/demo/resources/
 ```
 
-### 3. Run demo application on Raspberry Pi
+### 3. Run the demo application on the Raspberry Pi
 
-On Raspbery Pi serial port terminal
+On the serial terminal connected to the Raspberry Pi:
 
 ```bash
 cd ~/meus2026-workshop/
 ./demo/thistle-demo.sh run
 ```
 
-You should see an error indicating verification failure. This is expected.
-`Crtl-C` to stop the application. Edit file `demo/app/thistle_secure_loader.py`
-to add code snippets in functions `verify_model` and `decrypt_model` for AI
-model signature verification and decryption.
+You should see a verification-failure error — this is expected. Press `Ctrl-C`
+to stop the application, then edit `demo/app/thistle_secure_loader.py` and fill
+in the `verify_model` and `decrypt_model` functions with the
+signature-verification and decryption snippets.
 
-Run the demo application again.
+Run the demo application again:
 
 ```bash
 ./demo/thistle-demo.sh run
 ```
 
-On laptop PC, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
+On the laptop, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
 decrypted model is securely loaded for inference.
 
-On the serial terminal connected to the Raspberry Pi, `Ctrl-C` to stop the demo
-application when you are done.
+When you are done, press `Ctrl-C` on the serial terminal to stop the demo
+application.
 
-## Step 4: Run demo application, using the OPTIGA™ Trust M for key management
+## Step 4: Run the demo using the OPTIGA™ Trust M for key management
 
-1. On a browser on laptop PC, in your TCC project, go to "Settings > Access >
-   Releases" and copy the "OTA Public Verification Key" to clipboard.
+1. In a browser on the laptop, open your TCC project, go to **Settings > Access
+   > Releases**, and copy the **OTA Public Verification Key** to the clipboard.
 
-2. On the serial terminal connected to the Rasbperry Pi, provision the OTA
-   public key to the Trust M.
+2. On the serial terminal connected to the Raspberry Pi, provision the OTA
+   public key to the Trust M:
 
    ```bash
    cd ~/meus2026-workshop/
    # paste [OTA PUBKEY] from clipboard
    echo -n "[OTA PUBKEY]" > ota-pubkey.txt
 
-   # write public key to Trust M
+   # write the public key to Trust M
    ./demo/provision-trustm.sh ota-pubkey.txt
    ```
 
-3. On Raspberry Pi, edit `~/meus2026-workshop/demo/resources/tuc-config.json`,
-   in the `public_keys` array, replace `"ecdsa:..."` with `"trustm:/dev/i2c-1"`.
-   The result looks like
+3. On the Raspberry Pi, edit
+   `~/meus2026-workshop/demo/resources/tuc-config.json` and, in the
+   `public_keys` array, replace `"ecdsa:..."` with `"trustm:/dev/i2c-1"`. The
+   result should look like:
 
    ```json
    {
@@ -197,13 +198,13 @@ application when you are done.
    }
    ```
 
-4. Run the demo application on Raspberry Pi to use the Trust M for OTA bundle
-   and AI model verification
+4. Run the demo application on the Raspberry Pi to use the Trust M for OTA
+   bundle and AI model verification:
 
    ```bash
    cd ~/meus2026-workshop/
-   ./demo/app/demo.py run
+   ./demo/thistle-demo.sh run
    ```
 
-5. On laptop PC, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
+5. On the laptop, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
    decrypted model is securely loaded for inference.
