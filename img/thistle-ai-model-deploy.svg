@@ -55,7 +55,7 @@
 
   <rect class="bg-fill" width="960" height="540"/>
 
-  <text class="sans t1" x="24" y="34" font-size="18" font-weight="600">Thistle OTA Data Flow</text>
+  <text class="sans t1" x="24" y="34" font-size="18" font-weight="600">Thistle AI Model OTA Deploy Data Flow</text>
   <text class="sans t3" x="24" y="54" font-size="12">model.pt &#8594; TRH (encrypt + sign) &#8594; TCC &#8594; TUC &#8594; AI app (verify + decrypt at inference)</text>
 
   <rect x="24" y="72" width="912" height="4" rx="2" fill="var(--chrome)"/>

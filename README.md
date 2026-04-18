@@ -1,10 +1,10 @@
 # Microelectronics US 2026 Thistle Workshop Attendee Guide
 
 <p align="center">
-  <img src="img/thistle-ai-model-deploy.svg" alt="Thistle OTA data flow: TRH on
-  a laptop encrypts and signs model.pt, releases the OTA bundle to Thistle
-  Control Center, TUC on a Raspberry Pi fetches and verifies it, and decrypts
-  the model for the AI app at inference time." width="960">
+  <img src="img/thistle-ai-model-deploy.svg" alt="Thistle AI model OTA deploy
+  data flow: TRH on a laptop encrypts and signs model.pt, releases the OTA
+  bundle to Thistle Control Center, TUC on a Raspberry Pi fetches and verifies
+  it, and decrypts the model for the AI app at inference time." width="960">
 </p>
 
 In this workshop, we will learn how to
