@@ -63,8 +63,8 @@ In this workshop, you will learn how to:
 
      thistle@thistle-meus26:~ $ . ~/.thistle-meus26-demo/venv/bin/activate
      thistle@thistle-meus26:~ $ cd ~/meus2026-workshop
-     thistle@thistle-meus26:~ $ . demo/vars.env
-     thistle@thistle-meus26:~ $ python demo/app/demo.py
+     thistle@thistle-meus26:~/meus2026-workshop $ . demo/vars.env
+     thistle@thistle-meus26:~/meus2026-workshop $ python demo/app/demo.py
      ```
 
 3. On the laptop, browse to `http://[RPi IP ADDRESS]:5000/`. You should see a
@@ -144,8 +144,8 @@ scp tuc-config.json thistle@[RPi IP ADDRESS]:~/meus2026-workshop/demo/resources/
 On the serial terminal connected to the Raspberry Pi:
 
 ```bash
-cd ~/meus2026-workshop/
-./demo/thistle-demo.sh run
+thistle@thistle-meus26:~ $ cd ~/meus2026-workshop/
+thistle@thistle-meus26:~/meus2026-workshop $ ./demo/thistle-demo.sh run
 ```
 
 You should see a verification-failure error — this is expected. Press `Ctrl-C`
@@ -156,7 +156,7 @@ signature-verification and decryption snippets.
 Run the demo application again:
 
 ```bash
-./demo/thistle-demo.sh run
+thistle@thistle-meus26:~/meus2026-workshop $ ./demo/thistle-demo.sh run
 ```
 
 On the laptop, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
@@ -175,12 +175,12 @@ application.
    public key to the Trust M:
 
    ```bash
-   cd ~/meus2026-workshop/
+   thistle@thistle-meus26:~ $ cd ~/meus2026-workshop/
    # paste [OTA PUBKEY] from clipboard
-   echo -n "[OTA PUBKEY]" > ota-pubkey.txt
+   thistle@thistle-meus26:~/meus2026-workshop $ echo -n "[OTA PUBKEY]" > ota-pubkey.txt
 
    # write the public key to Trust M
-   ./demo/provision-trustm.sh ota-pubkey.txt
+   thistle@thistle-meus26:~/meus2026-workshop $ ./demo/provision-trustm.sh ota-pubkey.txt
    ```
 
 3. On the Raspberry Pi, edit
@@ -203,8 +203,8 @@ application.
    bundle and AI model verification:
 
    ```bash
-   cd ~/meus2026-workshop/
-   ./demo/thistle-demo.sh run
+   thistle@thistle-meus26:~ $ cd ~/meus2026-workshop/
+   thistle@thistle-meus26:~/meus2026-workshop $ ./demo/thistle-demo.sh run
    ```
 
 5. On the laptop, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
