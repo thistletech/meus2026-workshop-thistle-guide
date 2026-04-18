@@ -80,7 +80,7 @@ Open a browser on laptop PC.  Sign up in Thistle Control Center
 name, e.g., "MEUS 2026 Workshop". Visit "Project Settings > Access > Project",
 and copy the "Project Access Token" to clipboard.
 
-### 2. Use TRH to publish encrypted and signed pre-trained AI model
+### 2. Use TRH to publish encrypted and signed pre-trained AI model and create new device configuration
 
 In a terminal window on laptop PC
 
@@ -162,18 +162,48 @@ Run the demo application again.
 On laptop PC, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
 decrypted model is securely loaded for inference.
 
-On the Raspberry Pi serial terminal, `Ctrl-C` to stop the demo application when
-you are done.
+On the serial terminal connected to the Raspberry Pi, `Ctrl-C` to stop the demo
+application when you are done.
 
 ## Step 4: Run demo application, using the OPTIGA™ Trust M for key management
 
-Copy public key to clipboard
+1. On a browser on laptop PC, in your TCC project, go to "Settings > Access >
+   Releases" and copy the "OTA Public Verification Key" to clipboard.
 
-# No trailing whitespace
-echo -n "ecdsa:blahblahblah" > ota-pubkey.txt
+2. On the serial terminal connected to the Rasbperry Pi, provision the OTA
+   public key to the Trust M.
 
-./demo/provision-trustm.sh ota-pubkey.txt
+   ```bash
+   cd ~/meus2026-workshop/
+   # paste [OTA PUBKEY] from clipboard
+   echo -n "[OTA PUBKEY]" > ota-pubkey.txt
 
-In tuc-config.json, in public_keys array, replace "ecdsa:..." with "trustm:/dev/i2c-1".
+   # write public key to Trust M
+   ./demo/provision-trustm.sh ota-pubkey.txt
+   ```
 
-./demo/app/demo.py run
+3. On Raspberry Pi, edit `~/meus2026-workshop/demo/resources/tuc-config.json`,
+   in the `public_keys` array, replace `"ecdsa:..."` with `"trustm:/dev/i2c-1"`.
+   The result looks like
+
+   ```json
+   {
+       "name": "demo-device",
+       "persistent_directory": "/home/thistle/.thistle-meus26-demo",
+       "public_keys": [ "trustm:/dev/i2c-1" ],
+       "device_id": ...,
+       ...,
+       "single_check": true
+   }
+   ```
+
+4. Run the demo application on Raspberry Pi to use the Trust M for OTA bundle
+   and AI model verification
+
+   ```bash
+   cd ~/meus2026-workshop/
+   ./demo/app/demo.py run
+   ```
+
+5. On laptop PC, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
+   decrypted model is securely loaded for inference.
