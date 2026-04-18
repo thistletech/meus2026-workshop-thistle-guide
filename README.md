@@ -39,38 +39,62 @@ In this workshop, we will learn how to
 
 ## Step 2: Run demo application without using an AI model
 
+1. Use a USB to TTL serial cable to connect the laptop PC and the Raspberry Pi 4
+   - this should have already been set up for you. In a terminal window on the PC
 
+   ```bash
+   minicom -b 115200 -D /dev/ttyUSB0
+   ```
 
-### Step 3: Sign up on Thistle Control Center (TCC)
+2. Make sure the Raspberry Pi is powered on. On the login prompt, use username
+   `thistle` and password `raspberry` to login to the Raspberry Pi.
 
-Sign up in Thistle Control Center (https://app.thistle.tech). Once logged in,
-create a new project, and name it "MEUS 2026 Workshop" - you may also choose
-another project name you like.
+   - Find out the IP address of the Rasbperry Pi, and take note on it.
 
-## Run demo app without a model
+     ```bash
+     thistle@thistle-meus26:~ $ ip addr show wlan0
+     ```
 
-On RPi
+   - Run the demo AI application without a model
 
-. ~/.thistle-meus26-demo/venv/bin/activate
-cd ~/meus2026-workshop
-. demo/vars.env
-python demo/app/demo.py
+     ```bash
+     # Clean up first
+     thistle@thistle-meus26:~ $ rm -rf ~/.thistle-meus26-demo/ota
+     thistle@thistle-meus26:~ $ sudo umount ~/.thistle-meus26-demo/ramdisk
 
-Browse to http://<rpi-ip-addr>:5000/
+     thistle@thistle-meus26:~ $ . ~/.thistle-meus26-demo/venv/bin/activate
+     thistle@thistle-meus26:~ $ cd ~/meus2026-workshop
+     thistle@thistle-meus26:~ $ . demo/vars.env
+     thistle@thistle-meus26:~ $ python demo/app/demo.py
+     ```
 
-## Run demo app with end-to-end encrypted model
+3. On laptop PC, use a browser to view `http://[RPi IP ADDRESS]:5000/`. You
+   should see a video clip with title "Live Streaming (AI model isn't applied)".
 
-1. Sign up with Thistle
-2. Create a new project
-3. Copy project acccess token
+### Step 3: Securely deploy AI model and run demo application
 
-# At the repo's directory root
-export THISTLE_TOKEN=$(cat)
+### 1. Sign up on TCC
+
+Open a browser on laptop PC.  Sign up in Thistle Control Center
+(https://app.thistle.tech). Once logged in, create a new project, and give it a
+name, e.g., "MEUS 2026 Workshop". Visit "Project Settings > Access > Project",
+and copy the "Project Access Token" to clipboard.
+
+### 2. Use TRH to publish encrypted and signed pre-trained AI model
+
+In a terminal window on laptop PC
+
+```bash
+# Change to the repo's directory
+cd ~/meus2026-workshop/
 # Paste your Thistle "Project Access Token", then press Ctrl+d
+export THISTLE_TOKEN=$(cat)
 
+# Active hermit environment
 . bin/activate-hermit
 
 export DEMO_PERSIST_DIR="/home/thistle/.thistle-meus26-demo"
+
 # Initialize the TCC project
 trh --signing-method="remote" init
 
@@ -90,16 +114,58 @@ trh --signing-method="remote" prepare \
 # Release OTA bundle to TCC
 trh --signing-method="remote" release --name="AI model"
 
-
 # Generate tuc config
+trh --signing-method="remote" gen-device-config \
+  --device-name="demo-device" \
+  --enrollment-type="pre-enroll" \
+  --persist="${DEMO_PERSIST_DIR}" \
+  --config-path="./tuc-config.json"
+```
 
-trh --signing-method="remote" gen-device-config --device-name="demo-device" --enrollment-type="pre-enroll" --persist="${DEMO_PERSIST_DIR}"  --config-path="./tuc-config.json"
+Open `tuc-config.json`, and add `"single_check": true` to the end of the JSON block. Example
 
-Add `"single_check": true` to the end of the JSON file
+```json
+{
+    "name": "demo-device",
+    "persistent_directory": "/home/thistle/.thistle-meus26-demo",
+    ...,
+    "single_check": true
+}
+```
 
-scp tuc-config thistle@<rpi-ip-address>:~/meus2026-workshop/demo/resources/
+Copy `tuc-config.json` to the Raspberry Pi
 
-### With Trust M
+```bash
+scp tuc-config thistle@[RPi IP ADDRESS]:~/meus2026-workshop/demo/resources/
+```
+
+### 3. Run demo application on Raspberry Pi
+
+On Raspbery Pi serial port terminal
+
+```bash
+cd ~/meus2026-workshop/
+./demo/thistle-demo.sh run
+```
+
+You should see an error indicating verification failure. This is expected.
+`Crtl-C` to stop the application. Edit file `demo/app/thistle_secure_loader.py`
+to add code snippets in functions `verify_model` and `decrypt_model` for AI
+model signature verification and decryption.
+
+Run the demo application again.
+
+```bash
+./demo/thistle-demo.sh run
+```
+
+On laptop PC, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
+decrypted model is securely loaded for inference.
+
+On the Raspberry Pi serial terminal, `Ctrl-C` to stop the demo application when
+you are done.
+
+## Step 4: Run demo application, using the OPTIGA™ Trust M for key management
 
 Copy public key to clipboard
 
