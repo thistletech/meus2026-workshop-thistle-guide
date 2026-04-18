@@ -167,8 +167,9 @@ application.
 
 ## Step 4: Run the demo using the OPTIGA™ Trust M for key management
 
-1. In a browser on the laptop, open your TCC project, go to **Settings > Access
-   > Releases**, and copy the **OTA Public Verification Key** to the clipboard.
+1. In a browser on the laptop, open your TCC project, go to
+   **Settings > Access > Releases**, and copy the
+   **OTA Public Verification Key** to the clipboard.
 
 2. On the serial terminal connected to the Raspberry Pi, provision the OTA
    public key to the Trust M:
