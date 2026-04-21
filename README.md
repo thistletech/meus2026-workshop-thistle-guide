@@ -28,6 +28,8 @@ In this workshop, you will learn how to:
    exists. If it does not, clone this repository:
 
    ```bash
+   # install these programs if they are not already installed
+   sudo apt install curl minicom vim git
    # change to the home directory (/home/thistle)
    cd
    # clone this repo
@@ -74,9 +76,9 @@ In this workshop, you will learn how to:
 
 ### 1. Sign up on TCC
 
-On the laptop, open a browser and sign up at [Thistle Control
-Center](https://app.thistle.tech). Once logged in, create a new project and
-give it a name (for example, "MEUS 2026 Workshop"). Then visit **Settings >
+On the laptop, open a browser in privacy/incognito mode and sign up at [Thistle
+Control Center](https://app.thistle.tech). Once logged in, create a new project
+and give it a name (for example, "MEUS 2026 Workshop"). Then visit **Settings >
 Access > Project** and copy the **Project Access Token** to the clipboard.
 
 ### 2. Publish the encrypted, signed AI model and generate a device configuration
@@ -85,7 +87,7 @@ In a terminal on the laptop:
 
 ```bash
 # Change to the repo directory
-cd ~/meus2026-workshop/
+cd ~/meus2026-workshop-thistle-guide/
 # Paste your Thistle "Project Access Token", then press Ctrl+D
 export THISTLE_TOKEN=$(cat)
 
@@ -209,3 +211,22 @@ application.
 
 5. On the laptop, browse to `http://[RPi IP ADDRESS]:5000/` to confirm that the
    decrypted model is securely loaded for inference.
+
+## Step 5: Clean up
+
+When you are done, on the laptop PC:
+
+- On the serial terminal connected to the Raspberry Pi, poweroff the device
+
+  ```bash
+  thistle@thistle-meus26:~/meus2026-workshop $ sudo poweroff
+  # press Ctrl-A, X to exit from minicom
+  ```
+
+- Close the browser (and clear browser cache if needed)
+
+- Remove the cloned repo
+
+  ``bash
+  rm -rf ~/meus2026-workshop-thistle-guide
+  ```
