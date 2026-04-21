@@ -227,6 +227,6 @@ When you are done, on the laptop PC:
 
 - Remove the cloned repo
 
-  ``bash
+  ```bash
   rm -rf ~/meus2026-workshop-thistle-guide
   ```
