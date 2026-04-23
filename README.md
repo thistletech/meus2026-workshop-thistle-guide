@@ -94,8 +94,6 @@ export THISTLE_TOKEN=$(cat)
 # Activate the hermit environment
 . bin/activate-hermit
 
-export DEMO_PERSIST_DIR="/home/thistle/.thistle-meus26-demo"
-
 # Initialize the TCC project
 trh --signing-method="remote" init
 
@@ -106,7 +104,7 @@ curl -L -o ota/model.pt https://downloads.thistle.tech/thistle-ifx-rpi4-demo/mod
 # Prepare the OTA release (signed and encrypted)
 trh --signing-method="remote" prepare \
   --target="ota" \
-  --file-base-path="${DEMO_PERSIST_DIR}/ota" \
+  --file-base-path="/home/thistle/.thistle-meus26-demo/ota" \
   --encrypt-ai-model \
   --zip-target \
   --encrypt-ota \
@@ -119,7 +117,7 @@ trh --signing-method="remote" release --name="AI model"
 trh --signing-method="remote" gen-device-config \
   --device-name="demo-device" \
   --enrollment-type="pre-enroll" \
-  --persist="${DEMO_PERSIST_DIR}" \
+  --persist="/home/thistle/.thistle-meus26-demo" \
   --config-path="./tuc-config.json"
 ```
 
